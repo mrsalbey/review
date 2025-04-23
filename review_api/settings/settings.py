@@ -2,11 +2,16 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-b1r%q=0t$obvykj!6za$onlt8eyh$o8w@=tiqk-iokxirfk0d7'
+SECRET_KEY = os.getenv('SECRET_KEY', default='secret_key')
 
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
+
 
 ALLOWED_HOSTS = ['*']
 
@@ -19,8 +24,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'api',
-    'users'
+    'users',
+    'djoser'
 ]
 
 MIDDLEWARE = [
@@ -114,7 +121,7 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
     ],
     "DEFAULT_PAGINATION_CLASS": [
         "rest_framework.pagination.PageNumberPagination"
@@ -123,9 +130,27 @@ REST_FRAMEWORK = {
 }
 
 
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=10),
-    "AUTH_HEADER_TYPES": ("Bearer",),
+DJOSER = {
+    'LOGIN_FIELD': 'email',
+    'HIDE_USERS': False,
+    'PERMISSIONS': {
+        'user_list': ['rest_framework.permissions.AllowAny'],
+        'user': [
+            'api.permissions.ReadOnlyPermission',
+            'rest_framework.permissions.IsAuthenticated'
+        ],
+        'user_delete': ['api.permissions.DenyAll'],
+        'activation': ['api.permissions.DenyAll'],
+        'password_reset': ['api.permissions.DenyAll'],
+        'password_reset_confirm': ['api.permissions.DenyAll'],
+        'username_reset': ['api.permissions.DenyAll'],
+        'username_reset_confirm': ['api.permissions.DenyAll'],
+        'set_username': ['api.permissions.DenyAll']
+    },
+    'SERIALIZERS': {
+        'user': 'api.serializers.UserSerializer',
+        'current_user': 'api.serializers.UserSerializer',
+    }
 }
 
 
