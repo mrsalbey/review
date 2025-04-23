@@ -5,19 +5,18 @@ from rest_framework.decorators import action
 
 
 from .permissions import IsAuthorAdminOrReadOnly, ReadOnlyPermission
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 
 from .paginations import LimitPageNumberPagination
 from .serializers import UserSerializer
-
 
 
 class ReviewUserViewSet(UserViewSet):
     """
     Вьюсет для отображения списка пользователей.
     """
-    permission_classes = [IsAuthenticated]
+
+    permission_classes = [IsAdminUser]
     queryset = User.objects.all()
     serializer_class = UserSerializer
     pagination_class = LimitPageNumberPagination
-

@@ -7,4 +7,5 @@ class LimitPageNumberPagination(PageNumberPagination):
     объектов в результате.
     - параметр строки: 'limit'.
     """
-    page_size_query_param = 'limit'
+
+    page_size_query_param = "limit"
