@@ -2,8 +2,8 @@ from django.db import transaction
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from users.models import User
 
+from users.models import User
 
 ALL_FIELDS = "__all__"
 

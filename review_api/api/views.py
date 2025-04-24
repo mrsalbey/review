@@ -1,13 +1,12 @@
 from django.shortcuts import render
-from users.models import User
 from djoser.views import UserViewSet
 from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 
-
-from .permissions import IsAuthorAdminOrReadOnly, ReadOnlyPermission
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+from users.models import User
 
 from .paginations import LimitPageNumberPagination
+from .permissions import IsAuthorAdminOrReadOnly, ReadOnlyPermission
 from .serializers import UserSerializer
 
 
