@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
 from users.models import User
+from reviews.models import Student, Review, ReviewCategory, ReviewMetadata
 
 ALL_FIELDS = "__all__"
 
@@ -31,3 +32,37 @@ class UserSerializer(serializers.ModelSerializer):
         if value.lower() == "me":
             raise serializers.ValidationError("Нельзя использовать me")
         return value
+
+
+class StudentSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Student
+        fields = ("id", "name")
+    
+
+class ReviewCategorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ReviewCategory
+        fields = ("id", "name", "slug", "description")
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Review
+        fields = ("id", "student", "user", "project_id", "category")
+
+    def validate_project_id(self, value):
+        pass
+
+
+class ReviewMetadataSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = ReviewMetadata
+        fields = ("id", "review", "full_name", "object_id")
+
+    def validate_project_id(self, value):
+        pass
