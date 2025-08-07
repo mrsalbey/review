@@ -1,0 +1,13 @@
+{
+    "name": "Отладка 1Script",
+    "type": "oscript",
+    "request": "launch",
+    "cwd": "${workspaceRoot}/src",
+    "program": "extract-config-uuid.os",
+    "args": ["arg1", "arg2"],
+    "env": {
+        "OSCRIPT_CONFIG": "lib.system=D:/myOsLibraries",
+        "JAVA_HOME": "D:/MyJava/JDK_29_Full"
+    },
+    "debugPort": 2801
+}
