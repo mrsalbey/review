@@ -25,7 +25,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework.authtoken",
-    "drf_spectacular", 
+    "drf_spectacular",
     "djoser",
     "api",
     "reviews",
@@ -110,6 +110,14 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "PAGE_SIZE": 10,
+    "DEFAULT_THROTTLE_CLASSES": [
+        #'rest_framework.throttling.AnonRateThrottle',
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "10/minute",
+        "user": "100/minute",
+    },
 }
 
 
@@ -138,13 +146,13 @@ DJOSER = {
 
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Review API',
-    'DESCRIPTION': 'API documentation for your project',
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
-    'SCHEMA_PATH_PREFIX': '/api/v1/',
-    'SERVE_PERMISSIONS': ['rest_framework.permissions.AllowAny'],
-    'COMPONENT_SPLIT_REQUEST': True,  # Для корректной работы PATCH/PUT
+    "TITLE": "Review API",
+    "DESCRIPTION": "API documentation for your project",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SCHEMA_PATH_PREFIX": "/api/v1/",
+    "SERVE_PERMISSIONS": ["rest_framework.permissions.AllowAny"],
+    "COMPONENT_SPLIT_REQUEST": True,  # Для корректной работы PATCH/PUT
 }
 
 
