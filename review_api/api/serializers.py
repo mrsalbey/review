@@ -1,10 +1,12 @@
+import uuid
+
 from django.db import transaction
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
+from reviews.models import Review, ReviewCategory, ReviewMetadata, Student
 from users.models import User
-from reviews.models import Student, Review, ReviewCategory, ReviewMetadata
 
 ALL_FIELDS = "__all__"
 
@@ -35,34 +37,107 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class StudentSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = Student
         fields = ("id", "name")
-    
+
 
 class ReviewCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ReviewCategory
-        fields = ("id", "name", "slug", "description")
+        fields = ("id", "name", "slug")
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    student = StudentSerializer(read_only=True)
+    category = ReviewCategorySerializer(read_only=True)
 
     class Meta:
         model = Review
-        fields = ("id", "student", "user", "project_id", "category")
+        fields = ("id", "project_id", "created_at", "student", "category")
 
     def validate_project_id(self, value):
         pass
 
 
-class ReviewMetadataSerializer(serializers.ModelSerializer):
-    
+class ReviewCreateUpdateSerializer(serializers.ModelSerializer):
+    student = serializers.JSONField(write_only=True)
+    category = serializers.JSONField(write_only=True)
+
     class Meta:
-        model = ReviewMetadata
-        fields = ("id", "review", "full_name", "object_id")
+        model = Review
+        fields = ("id", "project_id", "student", "category", "created_at")
+        read_only_fields = ("id", "created_at", "user")
+        extra_kwargs = {
+            "project_id": {"required": True, "help_text": "36-символьный UUID проекта (с дефисами)"},
+        }
 
-    def validate_project_id(self, value):
-        pass
+    def validate(self, data):
+        # Валидация project_id как UUID
+        try:
+            uuid.UUID(data["project_id"])
+        except (ValueError, TypeError):
+            raise serializers.ValidationError({"project_id": "Должен быть валидный UUID (36 символов с дефисами)"})
+
+        # Валидация student
+        if "student" not in data or "id" not in data["student"]:
+            raise serializers.ValidationError({"student": "Требуется ID студента"})
+
+        try:
+            student_id = uuid.UUID(data["student"]["id"])
+            if not Student.objects.filter(id=student_id).exists() and "name" not in data["student"]:
+                raise serializers.ValidationError({"student": "Студент не найден и не указано имя для создания нового"})
+        except (ValueError, TypeError):
+            raise serializers.ValidationError({"student": "Некорректный формат UUID студента"})
+
+        # Валидация category
+        if "category" not in data or "slug" not in data["category"]:
+            raise serializers.ValidationError({"category": "Требуется slug категории"})
+
+        if not ReviewCategory.objects.filter(slug=data["category"]["slug"]).exists():
+            raise serializers.ValidationError({"category": "Категория с указанным slug не найдена"})
+
+        return data
+
+    def create_or_get_student(self, student_data):
+        try:
+            student_id = uuid.UUID(student_data["id"])
+            student, created = Student.objects.get_or_create(
+                id=student_id, defaults={"name": student_data["name"]} if "name" in student_data else {}
+            )
+            if not created and "name" in student_data:
+                student.name = student_data["name"]
+                student.save()
+            return student
+        except (ValueError, TypeError):
+            raise serializers.ValidationError({"student": "Некорректный формат UUID студента"})
+
+    def create(self, validated_data):
+        student_data = validated_data.pop("student")
+        category_data = validated_data.pop("category")
+
+        student = self.create_or_get_student(student_data)
+
+        review = Review.objects.create(
+            project_id=validated_data["project_id"],
+            student=student,
+            category=ReviewCategory.objects.get(slug=category_data["slug"]),
+            user=self.context["request"].user,
+        )
+        return review
+
+    def update(self, instance, validated_data):
+        if "student" in validated_data:
+            student_data = validated_data.pop("student")
+            instance.student = self.create_or_get_student(student_data)
+
+        if "category" in validated_data:
+            instance.category = ReviewCategory.objects.get(slug=validated_data["category"]["slug"])
+
+        if "project_id" in validated_data:
+            instance.project_id = validated_data["project_id"]
+
+        instance.save()
+        return instance

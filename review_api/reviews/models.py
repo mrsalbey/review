@@ -46,7 +46,7 @@ class ReviewCategory(models.Model):
     name = models.CharField(
         max_length=100, unique=True, verbose_name="Название категории", help_text="Например: Диплом, Мобильный, Спринт"
     )
-    slug = models.SlugField(max_length=100, unique=True, verbose_name="URL-идентификатор", blank=True)
+    slug = models.SlugField(max_length=100, unique=True, verbose_name="slug", blank=True)
     description = models.TextField(blank=True, verbose_name="Описание категории")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 

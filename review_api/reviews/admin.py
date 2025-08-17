@@ -14,9 +14,12 @@ class StudentAdmin(admin.ModelAdmin):
     list_filter = ("created_at",)
     ordering = ("name",)
 
+    fields = ("id", "name", "created_at")
+
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
-        form.base_fields["id"].help_text = "UUID студента (генерируется автоматически)"
+        if "id" in form.base_fields:
+            form.base_fields["id"].help_text = "UUID студента (генерируется автоматически)"
         return form
 
 

@@ -21,21 +21,41 @@ class DenyAll(permissions.BasePermission):
 
 class IsAuthorOrReadOnly(permissions.BasePermission):
     """
-    Доступ на изменение только для автора.
+    Разрешает:
+    - Чтение всем
+    - Изменение только автору
     """
 
     def has_object_permission(self, request, view, obj):
-        return request.method in permissions.SAFE_METHODS or obj.author == request.user
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return obj.user == request.user
 
 
 class IsAuthorAdminOrReadOnly(permissions.BasePermission):
     """
-    Доступ на изменение только для автора или админа.
-    Доступ на чтение всем остальным.
+    Разрешает:
+    - Чтение всем
+    - Создание любому авторизованному пользователю
+    - Изменение только автору или админу
     """
 
     def has_permission(self, request, view):
-        return request.method in permissions.SAFE_METHODS or request.user.is_superuser or request.user.is_authenticated
+        # Разрешаем GET, HEAD, OPTIONS всем
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        # Разрешаем POST любому авторизованному пользователю
+        if request.method == "POST":
+            return request.user.is_authenticated
+
+        # Для остальных методов (PUT, PATCH, DELETE) проверяем в has_object_permission
+        return True
 
     def has_object_permission(self, request, view, obj):
-        return request.method in permissions.SAFE_METHODS or obj.author == request.user or obj.user == request.user
+        # Разрешаем GET, HEAD, OPTIONS всем
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        # Разрешаем изменение только автору или админу
+        return obj.user == request.user or request.user.is_superuser

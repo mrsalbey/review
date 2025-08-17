@@ -25,10 +25,10 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework.authtoken",
+    "djoser",
     "api",
     "reviews",
     "users",
-    "djoser",
 ]
 
 MIDDLEWARE = [
@@ -84,9 +84,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "ru-Ru"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Moscow"
 
 USE_I18N = True
 
@@ -115,7 +115,8 @@ DJOSER = {
     "LOGIN_FIELD": "email",
     "HIDE_USERS": False,
     "PERMISSIONS": {
-        "user_list": ["rest_framework.permissions.AllowAny"],
+        # "user_list": ["rest_framework.permissions.AllowAny"],
+        "user_list": ["rest_framework.permissions.IsAuthenticated"],
         "user": [
             "api.permissions.ReadOnlyPermission",
             "rest_framework.permissions.IsAuthenticated",
