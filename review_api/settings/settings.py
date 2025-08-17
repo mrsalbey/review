@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework.authtoken",
+    "drf_spectacular", 
     "djoser",
     "api",
     "reviews",
@@ -106,7 +107,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
     "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework.authentication.TokenAuthentication"],
-    "DEFAULT_PAGINATION_CLASS": ["rest_framework.pagination.PageNumberPagination"],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "PAGE_SIZE": 10,
 }
 
@@ -115,7 +117,6 @@ DJOSER = {
     "LOGIN_FIELD": "email",
     "HIDE_USERS": False,
     "PERMISSIONS": {
-        # "user_list": ["rest_framework.permissions.AllowAny"],
         "user_list": ["rest_framework.permissions.IsAuthenticated"],
         "user": [
             "api.permissions.ReadOnlyPermission",
@@ -133,6 +134,17 @@ DJOSER = {
         "user": "api.serializers.UserSerializer",
         "current_user": "api.serializers.UserSerializer",
     },
+}
+
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Review API',
+    'DESCRIPTION': 'API documentation for your project',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'SCHEMA_PATH_PREFIX': '/api/v1/',
+    'SERVE_PERMISSIONS': ['rest_framework.permissions.AllowAny'],
+    'COMPONENT_SPLIT_REQUEST': True,  # Для корректной работы PATCH/PUT
 }
 
 
