@@ -4,7 +4,10 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv()
+
+env_path = Path(__file__).resolve().parent.parent.parent / "infra" / ".env"
+load_dotenv(env_path)
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -13,7 +16,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", default="secret_key")
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "review_api"]
 
 
 INSTALLED_APPS = [
@@ -111,10 +114,10 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "PAGE_SIZE": 10,
     "DEFAULT_THROTTLE_CLASSES": [
-        #'rest_framework.throttling.AnonRateThrottle',
         "rest_framework.throttling.UserRateThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": {
+        "extended_user": "100/minute",
         "anon": "10/minute",
         "user": "100/minute",
     },

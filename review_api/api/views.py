@@ -22,7 +22,6 @@ from .serializers import (
     StudentSerializer,
     UserSerializer,
 )
-from .throttles import ExtendedUserRateThrottle
 
 
 class ThrottleStatusView(APIView):
@@ -57,7 +56,7 @@ class ReviewUserViewSet(UserViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     pagination_class = LimitPageNumberPagination
-    throttle_classes = [ExtendedUserRateThrottle]
+    throttle_classes = [UserRateThrottle]
 
 
 class StudentViewSet(viewsets.ModelViewSet):
@@ -66,7 +65,7 @@ class StudentViewSet(viewsets.ModelViewSet):
     queryset = Student.objects.all()
     pagination_class = LimitPageNumberPagination
     filter_backends = (DjangoFilterBackend,)
-    throttle_classes = [ExtendedUserRateThrottle]
+    throttle_classes = [UserRateThrottle]
 
     def get_serializer_class(self):
         if self.request.method == "GET":
@@ -80,7 +79,7 @@ class ReviewCategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = ReviewCategory.objects.all()
     serializer_class = ReviewCategorySerializer
     pagination_class = None
-    throttle_classes = [ExtendedUserRateThrottle]
+    throttle_classes = [UserRateThrottle]
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
@@ -90,7 +89,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     pagination_class = LimitPageNumberPagination
     filter_backends = (DjangoFilterBackend,)
     filterset_class = ReviewFilter
-    throttle_classes = [ExtendedUserRateThrottle]
+    throttle_classes = [UserRateThrottle]
 
     def get_serializer_class(self):
         if self.request.method == "GET":
