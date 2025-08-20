@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: ..  # Корень проекта
+      dockerfile: review_api/Dockerfile
+    volumes:
+      - ../review_api:/app  # Hot-reload кода
+    environment:
+      - DEBUG=True
+      - DJANGO_SETTINGS_MODULE=review_api.settings.settings
+      - DATABASE_URL=sqlite:///db.sqlite3  # Используем SQLite для разработки
+    ports:
+      - "8000:8000"
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+
+  nginx:  # Опционально, если нужен Nginx в dev-режиме
+    image: nginx:1.25-alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - web

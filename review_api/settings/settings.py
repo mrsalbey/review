@@ -4,9 +4,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-
-env_path = Path(__file__).resolve().parent.parent.parent / "infra" / ".env"
-load_dotenv(env_path)
+load_dotenv()
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -16,7 +14,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", default="secret_key")
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "review_api"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "web"]
 
 
 INSTALLED_APPS = [
@@ -37,6 +35,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -44,6 +43,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 ROOT_URLCONF = "settings.urls"
 

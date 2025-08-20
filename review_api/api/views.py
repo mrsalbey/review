@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
-from rest_framework import exceptions, permissions, serializers, status, viewsets
+from rest_framework import (exceptions, permissions, serializers, status,
+                            viewsets)
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
@@ -15,13 +16,9 @@ from users.models import User
 from .filters import ReviewFilter
 from .paginations import LimitPageNumberPagination
 from .permissions import IsAuthorAdminOrReadOnly, ReadOnlyPermission
-from .serializers import (
-    ReviewCategorySerializer,
-    ReviewCreateUpdateSerializer,
-    ReviewSerializer,
-    StudentSerializer,
-    UserSerializer,
-)
+from .serializers import (ReviewCategorySerializer,
+                          ReviewCreateUpdateSerializer, ReviewSerializer,
+                          StudentSerializer, UserSerializer)
 
 
 class ThrottleStatusView(APIView):
