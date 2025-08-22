@@ -14,7 +14,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", default="secret_key")
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "web"]
+ALLOWED_HOSTS = ["45.85.117.133", "ostracon.ru", "www.ostracon.ru", "127.0.0.1", "localhost", "web"]
 
 
 INSTALLED_APPS = [
