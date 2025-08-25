@@ -41,6 +41,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - ./nginx/ssl/:/etc/nginx/ssl/
       - ./certbot/www:/var/www/certbot
       - ./certbot/conf/:/etc/letsencrypt
       - static_volume:/app/static/
