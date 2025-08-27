@@ -17,7 +17,7 @@ services:
   web:
     build:
       context: ..  
-      dockerfile: review_api/Dockerfile  # Путь от корня
+      dockerfile: review_api/Dockerfile
     restart: unless-stopped
     volumes:
       - static_volume:/app/static/

@@ -1,53 +1,20 @@
 server {
     listen 80;
-    listen [::]:80;
-
-    server_name ostracon.ru www.ostracon.ru;
-    server_tokens off;
+    server_name ostracon.ru 94.142.142.187;
     
-    location /.well-known/acme-challenge/ {
-        root /var/www/certbot;
-    }
-    
-    location / {
-        return 301 https://$host$request_uri;
-    }
-}
-
-
-server {
-    listen 443 default_server ssl http2;
-    listen [::]:443 ssl http2;
-
-    server_name ostracon.ru www.ostracon.ru;
-    
-    ssl_certificate /etc/letsencrypt/live/ostracon.ru/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/ostracon.ru/privkey.pem;
-    #include /etc/letsencrypt/options-ssl-nginx.conf;
-    #ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
-    include /etc/nginx/ssl/options-ssl-nginx.conf;
-    ssl_dhparam /etc/nginx/ssl/ssl-dhparams.pem;
-    
-    # Статика Django
-    location /static/ {
-        alias /app/static/;
-        expires 1y;
-        add_header Cache-Control public;
-    }
-
-    # Медиа файлы Django
-    location /media/ {
-        alias /app/media/;
-        expires 1y;
-        add_header Cache-Control public;
-    }
-
-    # Все запросы проксируем в Django
     location / {
         proxy_pass http://web:8000;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /static/ {
+        alias /app/static/;
+    }
+
+    location /media/ {
+        alias /app/media/;
     }
 }

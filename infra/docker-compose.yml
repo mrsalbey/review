@@ -15,9 +15,7 @@ services:
       retries: 5
 
   web:
-    build:
-      context: ..  
-      dockerfile: review_api/Dockerfile  # Путь от корня
+    image: salbey/review_backend:latest
     restart: unless-stopped
     volumes:
       - static_volume:/app/static/
@@ -37,15 +35,26 @@ services:
     image: nginx:1.25-alpine
     ports:
       - "80:80"
-    #  - "443:443"
+      - "443:443"
     restart: unless-stopped
     volumes:
       - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf/:/etc/letsencrypt
       - static_volume:/app/static/
       - media_volume:/app/media/
     entrypoint: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     depends_on:
       - web
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot
+      - ./certbot/conf/:/etc/letsencrypt
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    depends_on:
+      - nginx
 
 volumes:
   postgres_data:
