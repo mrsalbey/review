@@ -109,3 +109,10 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+certbot/conf/live/
+certbot/conf/archive/
+certbot/conf/renewal/
+.env
+*.pem
+*.key
