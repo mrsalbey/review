@@ -110,9 +110,12 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+# Sensitive data
+*.pem
+*.key
+*.crt
+
+# Certbot
 certbot/conf/live/
 certbot/conf/archive/
 certbot/conf/renewal/
-.env
-*.pem
-*.key
