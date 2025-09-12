@@ -161,3 +161,10 @@ class BulkReviewSerializer(serializers.ListSerializer):
             review = serializer.create(item)
             reviews.append(review)
         return reviews
+
+    def to_representation(self, instance):
+        # Возвращаем краткий формат ответа
+        return [
+            {"id": str(review.id), "project_id": review.project_id, "created_at": review.created_at.isoformat()}
+            for review in instance
+        ]

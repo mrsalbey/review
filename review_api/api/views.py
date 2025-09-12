@@ -97,7 +97,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         if self.request.user.is_anonymous:
-            raise serializers.ValidationError("Authentication required to create reviews")
+            raise serializers.ValidationError("Для создания ревью необходимо авторизоваться")
         serializer.save(user=self.request.user)
 
     @action(detail=False, methods=["post"], url_path="bulk", throttle_classes=[UserRateThrottle])
@@ -108,54 +108,14 @@ class ReviewViewSet(viewsets.ModelViewSet):
         if len(request.data) > 50:
             return Response({"error": "Максимальное количество элементов - 50"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Валидируем каждый элемент
-        validated_data = []
-        errors = []
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        for i, item in enumerate(request.data):
-            serializer = ReviewCreateUpdateSerializer(data=item, context={"request": request})
-            if serializer.is_valid():
-                validated_data.append(serializer.validated_data)
-            else:
-                errors.append({"index": i, "errors": serializer.errors})
+        # Сохраняем объекты
+        reviews = serializer.save()
 
-        if errors:
-            return Response({"error": "Ошибки валидации", "details": errors}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Создаем объекты
-        reviews_to_create = []
-        for item in validated_data:
-            student_data = item.pop("student")
-            category_data = item.pop("category")
-
-            student = self.create_or_get_student(student_data)
-            category = ReviewCategory.objects.get(slug=category_data["slug"])
-
-            reviews_to_create.append(
-                Review(project_id=item["project_id"], student=student, category=category, user=request.user)
-            )
-
-        # Массовое создание
-        created_reviews = Review.objects.bulk_create(reviews_to_create)
-
+        # Возвращаем ответ через сериализатор (уже в кратком формате)
         return Response(
-            {
-                "message": f"Успешно создано {len(created_reviews)} ревью",
-                "data": ReviewSerializer(created_reviews, many=True).data,
-            },
+            {"message": f"Успешно создано {len(reviews)} ревью", "data": serializer.data},
             status=status.HTTP_201_CREATED,
         )
-
-    def create_or_get_student(self, student_data):
-        # Ваша существующая логика из сериализатора
-        try:
-            student_id = uuid.UUID(student_data["id"])
-            student, created = Student.objects.get_or_create(
-                id=student_id, defaults={"name": student_data.get("name", "")}
-            )
-            if not created and "name" in student_data:
-                student.name = student_data["name"]
-                student.save()
-            return student
-        except (ValueError, TypeError):
-            raise serializers.ValidationError({"student": "Некорректный формат UUID студента"})
