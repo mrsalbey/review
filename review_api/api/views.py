@@ -1,5 +1,3 @@
-import uuid
-
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
 from rest_framework import serializers, status, viewsets
@@ -18,7 +16,8 @@ from .paginations import LimitPageNumberPagination
 from .permissions import IsAuthorAdminOrReadOnly
 from .serializers import (BulkReviewSerializer, ReviewCategorySerializer,
                           ReviewCreateUpdateSerializer, ReviewSerializer,
-                          StudentSerializer, UserSerializer)
+                          ReviewShortSerializer, StudentSerializer,
+                          UserSerializer)
 
 
 class ThrottleStatusView(APIView):
@@ -90,7 +89,10 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.request.method == "GET":
-            return ReviewSerializer
+            if self.action == "list":
+                return ReviewShortSerializer
+            else:
+                return ReviewSerializer
         if self.action == "bulk_create":
             return BulkReviewSerializer
         return ReviewCreateUpdateSerializer

@@ -57,8 +57,22 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
         fields = ("id", "project_id", "created_at", "student", "category")
 
-    def validate_project_id(self, value):
-        pass
+
+class ReviewShortSerializer(serializers.ModelSerializer):
+    student = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Review
+        fields = ("id", "project_id", "created_at", "student", "category")
+
+    def get_student(self, obj):
+        # Возвращаем только имя студента
+        return obj.student.name
+
+    def get_category(self, obj):
+        # Возвращаем только slug категории
+        return obj.category.slug
 
 
 class ReviewCreateUpdateSerializer(serializers.ModelSerializer):
