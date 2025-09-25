@@ -14,10 +14,15 @@ from users.models import User
 from .filters import ReviewFilter
 from .paginations import LimitPageNumberPagination
 from .permissions import IsAuthorAdminOrReadOnly
-from .serializers import (BulkReviewSerializer, ReviewCategorySerializer,
-                          ReviewCreateUpdateSerializer, ReviewSerializer,
-                          ReviewShortSerializer, StudentSerializer,
-                          UserSerializer)
+from .serializers import (
+    BulkReviewSerializer,
+    ReviewCategorySerializer,
+    ReviewCreateUpdateSerializer,
+    ReviewSerializer,
+    ReviewShortSerializer,
+    StudentSerializer,
+    UserSerializer,
+)
 
 
 class ThrottleStatusView(APIView):

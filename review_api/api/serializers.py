@@ -160,7 +160,6 @@ class BulkReviewSerializer(serializers.ListSerializer):
     child = ReviewCreateUpdateSerializer()
 
     def validate(self, data):
-        # Валидация всех элементов через родительский сериализатор
         for item in data:
             serializer = ReviewCreateUpdateSerializer(data=item, context=self.context)
             if not serializer.is_valid():
@@ -170,15 +169,10 @@ class BulkReviewSerializer(serializers.ListSerializer):
     def create(self, validated_data):
         reviews = []
         for item in validated_data:
-            # Используем существующий метод create основного сериализатора
             serializer = ReviewCreateUpdateSerializer(context=self.context)
             review = serializer.create(item)
             reviews.append(review)
         return reviews
 
     def to_representation(self, instance):
-        # Возвращаем краткий формат ответа
-        return [
-            {"id": str(review.id), "project_id": review.project_id, "created_at": review.created_at.isoformat()}
-            for review in instance
-        ]
+        return ReviewShortSerializer(instance, many=True).data
