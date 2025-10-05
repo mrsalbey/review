@@ -1,8 +1,10 @@
 from django.urls import include, path
-from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from drf_spectacular.views import (SpectacularAPIView, SpectacularRedocView,
+                                   SpectacularSwaggerView)
 from rest_framework.routers import DefaultRouter
 
-from .views import ReviewCategoryViewSet, ReviewUserViewSet, ReviewViewSet, StudentViewSet, ThrottleStatusView
+from .views import (ReviewCategoryViewSet, ReviewUserViewSet, ReviewViewSet,
+                    StudentViewSet, ThrottleStatusView, UploadDTFileView)
 
 router = DefaultRouter()
 
@@ -18,5 +20,6 @@ urlpatterns = [
     path("v1/swagger/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
     path("v1/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
     path("v1/throttle-status/", ThrottleStatusView.as_view(), name="throttle-status"),
+    path("v1/upload/", UploadDTFileView.as_view(), name="upload-dt"),
     path("v1/", include(router.urls)),
 ]
