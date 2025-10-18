@@ -21,10 +21,15 @@ from users.models import User
 from .filters import ReviewFilter
 from .paginations import LimitPageNumberPagination
 from .permissions import IsAuthorAdminOrReadOnly
-from .serializers import (BulkReviewSerializer, ReviewCategorySerializer,
-                          ReviewCreateUpdateSerializer, ReviewSerializer,
-                          ReviewShortSerializer, StudentSerializer,
-                          UserSerializer)
+from .serializers import (
+    BulkReviewSerializer,
+    ReviewCategorySerializer,
+    ReviewCreateUpdateSerializer,
+    ReviewSerializer,
+    ReviewShortSerializer,
+    StudentSerializer,
+    UserSerializer,
+)
 
 
 class UploadDTFileView(APIView):
@@ -124,8 +129,8 @@ class UploadDTFileView(APIView):
         name, ext = os.path.splitext(original_filename)
 
         # Убираем пробелы из имени файла
-        name = re.sub(r'[^\w\.-]', '_', name)
-    
+        name = re.sub(r"[^\w\.-]", "_", name)
+
         return f"{name}_{timestamp}_{unique_id}{ext}"
 
 
