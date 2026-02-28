@@ -170,3 +170,14 @@ EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 CSRF_TRUSTED_ORIGINS = ["https://ostracon.ru", "https://www.ostracon.ru"]
+
+# Для корректной работы за прокси (nginx)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
+
+# Дополнительные security настройки для HTTPS
+SECURE_SSL_REDIRECT = False  # Не перенаправляем, т.к. nginx уже это делает
+SECURE_HSTS_SECONDS = 31536000  # 1 год
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
