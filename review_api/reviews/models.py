@@ -2,7 +2,6 @@ import uuid
 
 from django.core.validators import RegexValidator
 from django.db import models
-
 from users.models import User
 
 uuid_validator = RegexValidator(

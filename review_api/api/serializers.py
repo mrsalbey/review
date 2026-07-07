@@ -3,7 +3,6 @@ import uuid
 from django.db import transaction
 from django.db.models import Count
 from rest_framework import serializers
-
 from reviews.models import Review, ReviewCategory, ReviewMetadata, Student
 from users.models import User
 

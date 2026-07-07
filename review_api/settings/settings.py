@@ -172,7 +172,7 @@ SESSION_COOKIE_SECURE = True
 CSRF_TRUSTED_ORIGINS = ["https://ostracon.ru", "https://www.ostracon.ru"]
 
 # Для корректной работы за прокси (nginx)
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 USE_X_FORWARDED_HOST = True
 USE_X_FORWARDED_PORT = True
 

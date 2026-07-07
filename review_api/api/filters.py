@@ -1,5 +1,4 @@
 from django_filters.rest_framework import FilterSet, UUIDFilter
-
 from reviews.models import Review
 
 

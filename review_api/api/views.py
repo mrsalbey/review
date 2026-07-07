@@ -14,22 +14,16 @@ from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.throttling import UserRateThrottle
 from rest_framework.views import APIView
-
 from reviews.models import Review, ReviewCategory, Student
 from users.models import User
 
 from .filters import ReviewFilter
 from .paginations import LimitPageNumberPagination
 from .permissions import IsAuthorAdminOrReadOnly
-from .serializers import (
-    BulkReviewSerializer,
-    ReviewCategorySerializer,
-    ReviewCreateUpdateSerializer,
-    ReviewSerializer,
-    ReviewShortSerializer,
-    StudentSerializer,
-    UserSerializer,
-)
+from .serializers import (BulkReviewSerializer, ReviewCategorySerializer,
+                          ReviewCreateUpdateSerializer, ReviewSerializer,
+                          ReviewShortSerializer, StudentSerializer,
+                          UserSerializer)
 
 
 class UploadDTFileView(APIView):
